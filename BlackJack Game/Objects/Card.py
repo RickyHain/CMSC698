@@ -16,6 +16,9 @@ class Card:
             raise ValueError(f"Invalid suit: {s}")
 
     def getVal(self):
+        if self.value > 10:
+            return 10
+        
         return self.value
 
     def getSuit(self):
@@ -33,3 +36,18 @@ class Card:
             elif self.value == 14:
                 print_value = "Ace"
         return f"{print_value} of {self.suit}"
+    
+    def abrev_str(self):
+        print_value = self.value
+        if self.value > 10:
+            if self.value == 11:
+                print_value = "J"
+            elif self.value == 12:
+                print_value = "Q"
+            elif self.value == 13:
+                print_value = "K"
+            elif self.value == 14:
+                print_value = "A"
+        
+        
+        return f"{print_value}{self.suit[0]}"

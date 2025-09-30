@@ -24,6 +24,9 @@ class Deck(object):
     def __init__(self):
         self.setup()
 
+    def pull_card(self):
+        return self.cards.pop(0)
+
     def print(self):
         for card in self.cards:
-            print(card)
+            print(card.abrev_str())
