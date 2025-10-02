@@ -17,7 +17,7 @@ class Deck(object):
         self.cards = []
         for i in range (self.numDecks):
             for suit in ["Hearts", "Spades", "Clubs", "Diamonds"]:
-                for val in range (1,15):
+                for val in range (1,14):
                     self.cards.append(Card(val,suit))
         self.shuffle()
 

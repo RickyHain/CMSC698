@@ -39,15 +39,15 @@ class Card:
     
     def abrev_str(self):
         print_value = self.value
-        if self.value > 10:
+        if self.value == 1:
+            print_value = "A"
+        elif self.value > 10:
             if self.value == 11:
                 print_value = "J"
             elif self.value == 12:
                 print_value = "Q"
             elif self.value == 13:
                 print_value = "K"
-            elif self.value == 14:
-                print_value = "A"
         
         
         return f"{print_value}{self.suit[0]}"
