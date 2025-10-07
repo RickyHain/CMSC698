@@ -1,6 +1,7 @@
 from .Deck import Deck
 from .Card import Card
 from .Hand import Hand
+#from .Card_Counting.DataTracker import DataTracker
 import os
 
 class Game():
@@ -13,20 +14,33 @@ class Game():
     dealer_wins = 0
 
     def __init__(self,number_players = 1, number_decks = 2):
+
         self.num_players = number_players
         self.num_decks = number_decks
         self.deck.setNumDecks(number_decks)
         self.start_game()
 
+    # Getters
+    def get_deck(self):
+        return self.deck
+
+    def get_player_hand(self):
+        return self.player_hand
+
+    def get_dealer_hand(self):
+        return self.dealer_hand
+    # Getters
+
+
     def start_game(self):
         self.player_hand.append(self.deck.pull_card())
         self.dealer_hand.append(self.deck.pull_card())
         self.player_hand.append(self.deck.pull_card())
-        self.game_loop()
+        self.player_evaluate()
 
     def game_loop(self):
         self.print_console(type=0)
-        hit = hit_stand()
+        hit = hit_stand(self.deck)
         if hit:
             print('you hit')
             self.player_hand.append(self.deck.pull_card())
@@ -39,13 +53,13 @@ class Game():
         p_val = self.player_hand.get_hand_val()
 
         if(p_val<21):
-            print('less')
+            #print('less')
             self.game_loop()
         elif(p_val==21):
-            print('equal')
+            #print('equal')
             self.dealer_evaluate()
         else:
-            print('more')
+            #print('more')
             self.end_game()
 
     def dealer_evaluate(self):
@@ -98,15 +112,27 @@ class Game():
         elif(type==5): #Draw
             print(f"DRAW\nDealer - {self.dealer_hand.get_hand_val()}\n{self.dealer_hand}\nYou - {self.player_hand.get_hand_val()} \n{self.player_hand}")
 
-def hit_stand():
+
+    def return_csv(self):
+        top_card_val = self.deck[0].getVal
+        hit_bool = False 
+        if (top_card_val+self.player_hand.get_hand_val() <= 21): #don't hit unless the next card keeps hand under 21
+            hit_bool = True
+        return [hit_bool, self.player_hand.get_hand_val(), self.dealer_hand.get_hand_val()] + self.deck.get_csv()
+               #[Hit? (T/F), player_hand_value, dealer_hand_value, Aces left, 10/J/Q/K's left, 9s left , ..., 2s left]
+
+def hit_stand(deck):
     move = input("(H)it or (S)tand: ").upper()
+    if(move == "P"):
+        print(deck.get_csv())
+
     if(move == "H" or move == "S"):
         if (move == "H"):
             return True
         else:
             return False
     else:
-        hit_stand()
+        return hit_stand(deck)
 
 def play_again():
     play_again = input("Enter to play again").upper()
