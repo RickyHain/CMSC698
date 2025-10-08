@@ -65,6 +65,9 @@ class Deck(object):
 
         return card
 
+    def get_top_card(self):
+        return self.cards[0]
+
     def print(self):
         for card in self.cards:
             print(card.abrev_str())

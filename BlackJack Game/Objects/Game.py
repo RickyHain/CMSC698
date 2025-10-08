@@ -1,7 +1,7 @@
 from .Deck import Deck
 from .Card import Card
 from .Hand import Hand
-#from .Card_Counting.DataTracker import DataTracker
+from .Card_Counting.DataTracker import DataTracker
 import os
 
 class Game():
@@ -14,7 +14,7 @@ class Game():
     dealer_wins = 0
 
     def __init__(self,number_players = 1, number_decks = 2):
-
+        self.dt = DataTracker(self.player_hand,self.dealer_hand,self.deck)
         self.num_players = number_players
         self.num_decks = number_decks
         self.deck.setNumDecks(number_decks)
@@ -39,8 +39,9 @@ class Game():
         self.player_evaluate()
 
     def game_loop(self):
+        self.dt.expand_csv_list()
         self.print_console(type=0)
-        hit = hit_stand(self.deck)
+        hit = hit_stand(self.deck,self.dt)
         if hit:
             print('you hit')
             self.player_hand.append(self.deck.pull_card())
@@ -113,18 +114,14 @@ class Game():
             print(f"DRAW\nDealer - {self.dealer_hand.get_hand_val()}\n{self.dealer_hand}\nYou - {self.player_hand.get_hand_val()} \n{self.player_hand}")
 
 
-    def return_csv(self):
-        top_card_val = self.deck[0].getVal
-        hit_bool = False 
-        if (top_card_val+self.player_hand.get_hand_val() <= 21): #don't hit unless the next card keeps hand under 21
-            hit_bool = True
-        return [hit_bool, self.player_hand.get_hand_val(), self.dealer_hand.get_hand_val()] + self.deck.get_csv()
-               #[Hit? (T/F), player_hand_value, dealer_hand_value, Aces left, 10/J/Q/K's left, 9s left , ..., 2s left]
-
-def hit_stand(deck):
+   
+def hit_stand(deck,data_tracker):
     move = input("(H)it or (S)tand: ").upper()
     if(move == "P"):
         print(deck.get_csv())
+
+    if(move == "U"):
+        data_tracker.update_csv_file()
 
     if(move == "H" or move == "S"):
         if (move == "H"):
@@ -132,7 +129,7 @@ def hit_stand(deck):
         else:
             return False
     else:
-        return hit_stand(deck)
+        return hit_stand(deck,data_tracker)
 
 def play_again():
     play_again = input("Enter to play again").upper()
