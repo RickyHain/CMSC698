@@ -1,4 +1,8 @@
 from Objects.Game import Game
-import csv
 
-game = Game(1,6)
+game = Game(1,6, 500, 10)
+
+game.start_game()
+
+for i in range (500):
+    game.reset_game()

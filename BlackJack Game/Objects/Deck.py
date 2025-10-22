@@ -29,7 +29,7 @@ class Deck(object):
         for i in range (self.numDecks):
             for suit in ["Hearts", "Spades", "Clubs", "Diamonds"]:
                 for val in range (1,14):
-                    self.cards.append(Card(val,suit))
+                    self.cards.append(Card((val%5+7),suit))
         self.shuffle()
 
     def __init__(self):
@@ -37,7 +37,12 @@ class Deck(object):
         self.setup()
 
     def pull_card(self):
-        card = self.cards.pop(0)
+        if(len(self.cards) > 104): #If there are more than 2 decks left keep drawing
+            card = self.cards.pop(0)
+        else: #If there's less, we reshuffle at total numDecks and draw the top card 
+            self.setup()
+            card = self.cards.pop(0)
+            
         
         pullcard_val = card.getVal()
 

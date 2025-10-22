@@ -1,67 +1,76 @@
 from .Deck import Deck
 from .Card import Card
 from .Hand import Hand
+from .Players.Player import Player
+from .Players.BasicStrategy import BasicStrategy
+from .Players.TestPlayer import TestPlayer
+
 from .Card_Counting.DataTracker import DataTracker
+from .Card_Counting.AveragePlayer import AveragePlayer
+from .Card_Counting.Cheater import Cheater
+
 import os
 
 class Game():
-    num_players = int #maybe do later
-    num_decks = int
-    deck = Deck()
-    player_hand = Hand()
-    dealer_hand = Hand()
-    player_wins = 0
-    dealer_wins = 0
+    #Intitalizing variables depending on specificaation in "black_jack.py"
+    def __init__(self,number_players = 1, number_decks = 6, max_bet = 500, min_bet = 10):
+        #Used to generate csv data for each choice
+        #self.dt = DataTracker(self.player_hand,self.dealer_hand,self.deck)
+        #our diffetent player objects
+        # self.ch = Cheater(self.player_hand,self.dealer_hand,self.deck)
+        # self.ap = AveragePlayer(self.player_hand, self.dealer_hand)
+        self.dealer_hand: Hand = Hand()
+        self.player_wins: int = 0
+        self.dealer_wins: int = 0
+        self.player_hand: Hand
+        self.player: BasicStrategy = BasicStrategy(max_bet, min_bet, self.dealer_hand)
+        #self.player: Player = Player(max_bet, min_bet)
 
-    def __init__(self,number_players = 1, number_decks = 2):
-        self.dt = DataTracker(self.player_hand,self.dealer_hand,self.deck)
-        self.num_players = number_players
-        self.num_decks = number_decks
+        #Specifications for gameplay
+        self.num_players: int = number_players
+        self.num_decks: int = number_decks
+        self.deck: Deck = Deck()
         self.deck.setNumDecks(number_decks)
-        self.start_game()
-
-    # Getters
-    def get_deck(self):
-        return self.deck
-
-    def get_player_hand(self):
-        return self.player_hand
-
-    def get_dealer_hand(self):
-        return self.dealer_hand
-    # Getters
-
 
     def start_game(self):
+        self.player.place_bet()
+        self.player_hand = self.player.get_hand()
+
         self.player_hand.append(self.deck.pull_card())
         self.dealer_hand.append(self.deck.pull_card())
         self.player_hand.append(self.deck.pull_card())
-        self.player_evaluate()
 
-    def game_loop(self):
-        self.dt.expand_csv_list()
+        if self.player.all_done():
+            self.dealer_evaluate()
+        else:
+            self.hit_loop()
+
+    def hit_loop(self):
+        try:
+            self.dt.expand_csv_list()
+        except:
+            pass
+
+        self.player_hand = self.player.get_hand()
         self.print_console(type=0)
-        hit = hit_stand(self.deck,self.dt)
-        if hit:
-            print('you hit')
+
+        choice = self.player.hit_stand()
+
+        if choice == "H":
+            self.player_hand.hit(self.deck.pull_card())
+        elif choice == "S":
+            self.player_hand.stand()
+        elif choice == "D":
+            self.player_hand.double(self.deck.pull_card())
+        elif choice == "SP":
+            self.player.split()
+        elif choice == "C":
             self.player_hand.append(self.deck.pull_card())
-            self.player_evaluate()
-        else:
-            print('you stood')
-            self.dealer_evaluate()
 
-    def player_evaluate(self):
-        p_val = self.player_hand.get_hand_val()
-
-        if(p_val<21):
-            #print('less')
-            self.game_loop()
-        elif(p_val==21):
-            #print('equal')
+        if self.player.all_done():
             self.dealer_evaluate()
         else:
-            #print('more')
-            self.end_game()
+            self.hit_loop()
 
     def dealer_evaluate(self):
         d_val = self.dealer_hand.get_hand_val()
@@ -76,31 +85,34 @@ class Game():
         d_val = self.dealer_hand.get_hand_val()
         p_val = self.player_hand.get_hand_val()
 
-        if(p_val>21): #player bust
+        if(p_val>21):                           #player bust
             self.dealer_wins+=1
             self.print_console(type=1)
-        elif(d_val>21): #dealer bust
+        elif(d_val>21):                         #dealer bust
             self.player_wins+=1
             self.print_console(type=2)
-        elif(p_val>d_val): #player higher
+        elif(p_val>d_val):                      #player higher
             self.dealer_wins+=1
             self.print_console(type=3)
-        elif(d_val>p_val): #dealer higher
+        elif(d_val>p_val):                      #dealer higher
             self.player_wins+=1
             self.print_console(type=4)
-        elif(d_val==p_val): #draw
+        elif(d_val==p_val):                     #draw
             self.print_console(type=5)
-        self.reset_game()
+
         
     def reset_game(self):
-        play_again()
-        self.player_hand.reset()
+        self.player.reset(self.dealer_hand)
         self.dealer_hand.reset()
-        self.start_game()
+        try:
+            self.start_game()
+        except RecursionError:
+            self.dt.update_csv_file()
 
     def print_console(self, type):
         os.system("cls")
-        if (type == 0): #Game_loop
+        print(f"Hand Bet: {str(self.player_hand.get_bet())}  Total Profit: {str(self.player.get_proft())}")
+        if (type == 0): #hit_loop
             print(f"Dealer - {self.dealer_hand.get_hand_val_print()}\n{self.dealer_hand}\nYou - {self.player_hand.get_hand_val_print()} \n{self.player_hand}")
         elif(type==1): #Dealer Win (player bust)
             print(f"Dealer WINS!\nDealer - {self.dealer_hand.get_hand_val()}\n{self.dealer_hand}\nYou - {self.player_hand.get_hand_val()} BUST\n{self.player_hand}")
@@ -113,23 +125,3 @@ class Game():
         elif(type==5): #Draw
             print(f"DRAW\nDealer - {self.dealer_hand.get_hand_val()}\n{self.dealer_hand}\nYou - {self.player_hand.get_hand_val()} \n{self.player_hand}")
 
-
-   
-def hit_stand(deck,data_tracker):
-    move = input("(H)it or (S)tand: ").upper()
-    if(move == "P"):
-        print(deck.get_csv())
-
-    if(move == "U"):
-        data_tracker.update_csv_file()
-
-    if(move == "H" or move == "S"):
-        if (move == "H"):
-            return True
-        else:
-            return False
-    else:
-        return hit_stand(deck,data_tracker)
-
-def play_again():
-    play_again = input("Enter to play again").upper()
