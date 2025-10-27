@@ -5,6 +5,8 @@ from .Card import Card
 class Deck(object):
     numDecks = 1
     cards = []
+    count = 0
+    
 
     def shuffle(self):
         random.shuffle(self.cards)
@@ -13,7 +15,11 @@ class Deck(object):
         self.numDecks = n
         self.setup()
 
+    def get_deck_size(self):
+        return len(self.cards)
+
     def setup(self):
+        self.count = 0
         self.aces = self.numDecks * 4
         self.tens = self.numDecks * 4 * 4        # 4 suits * 4 ten values (10, J, Q, K)
         self.nines = self.numDecks * 4
@@ -29,15 +35,17 @@ class Deck(object):
         for i in range (self.numDecks):
             for suit in ["Hearts", "Spades", "Clubs", "Diamonds"]:
                 for val in range (1,14):
-                    self.cards.append(Card((val%5+7),suit))
+                    self.cards.append(Card((val),suit))
         self.shuffle()
 
-    def __init__(self):
-        self.numDecks = 1
+    def __init__(self, n):
+        self.numDecks = n
+        self.setNumDecks(n)
         self.setup()
 
     def pull_card(self):
-        if(len(self.cards) > 104): #If there are more than 2 decks left keep drawing
+        card: Card
+        if(len(self.cards) >= 104 and self.numDecks >= 4): #If there are more than 2 decks left keep drawing
             card = self.cards.pop(0)
         else: #If there's less, we reshuffle at total numDecks and draw the top card 
             self.setup()
@@ -68,10 +76,25 @@ class Deck(object):
         elif pullcard_val == 10:
             self.tens -= 1
 
+        if pullcard_val in [10,1]:
+            self.count -= 1
+        elif pullcard_val in [2,3,4,5,6]:
+            self.count +=1
+
         return card
 
     def get_top_card(self):
         return self.cards[0]
+
+    def get_true_count(self):
+        return -float(self.count/(float(len(self.cards)/52)))
+    
+    def get_count(self):
+        return self.count
+    
+    def get_count_calc(self):
+        deck = self
+        return ((deck.twos+deck.threes+deck.fours+deck.fives+deck.sixes)-(deck.tens+deck.aces))/(float(len(self.cards)/52))
 
     def print(self):
         for card in self.cards:

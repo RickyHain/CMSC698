@@ -57,6 +57,10 @@ class Hand():
     def append(self, card):
         if(card.getVal() == 1):
             self.ace = True
+
+        if(len(self._data)!=2):
+            self.split = False
+
         self._data.append(card)
         self.evaluate(card)
 

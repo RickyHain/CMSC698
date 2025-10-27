@@ -4,6 +4,7 @@ from .Hand import Hand
 from .Players.Player import Player
 from .Players.BasicStrategy import BasicStrategy
 from .Players.TestPlayer import TestPlayer
+from .Players.CardCounter import CardCounter
 
 from .Card_Counting.DataTracker import DataTracker
 from .Card_Counting.AveragePlayer import AveragePlayer
@@ -15,25 +16,27 @@ class Game():
     #Intitalizing variables depending on specificaation in "black_jack.py"
     def __init__(self,number_players = 1, number_decks = 6, max_bet = 500, min_bet = 10):
         #Used to generate csv data for each choice
-        #self.dt = DataTracker(self.player_hand,self.dealer_hand,self.deck)
         #our diffetent player objects
         # self.ch = Cheater(self.player_hand,self.dealer_hand,self.deck)
         # self.ap = AveragePlayer(self.player_hand, self.dealer_hand)
         self.dealer_hand: Hand = Hand()
         self.player_wins: int = 0
         self.dealer_wins: int = 0
-        self.player_hand: Hand
-        self.player: BasicStrategy = BasicStrategy(max_bet, min_bet, self.dealer_hand)
-        #self.player: Player = Player(max_bet, min_bet)
+        self.player_hand: Hand = Hand()
 
         #Specifications for gameplay
         self.num_players: int = number_players
         self.num_decks: int = number_decks
-        self.deck: Deck = Deck()
-        self.deck.setNumDecks(number_decks)
+        self.deck: Deck = Deck(number_decks)
+
+        self.player: CardCounter = CardCounter(max_bet, min_bet, self.dealer_hand, self.deck)
+        # self.player: Player = Player(max_bet, min_bet)
+        #self.player: BasicStrategy = BasicStrategy(max_bet, min_bet, self.dealer_hand)
+        self.dt = DataTracker(self.player,self.dealer_hand,self.deck)
 
     def start_game(self):
         self.player.place_bet()
+        self.dt.expand_betting_csv()
         self.player_hand = self.player.get_hand()
 
         self.player_hand.append(self.deck.pull_card())
@@ -46,15 +49,12 @@ class Game():
             self.hit_loop()
 
     def hit_loop(self):
-        try:
-            self.dt.expand_csv_list()
-        except:
-            pass
-
         self.player_hand = self.player.get_hand()
         self.print_console(type=0)
 
         choice = self.player.hit_stand()
+        if choice != "C":
+            self.dt.expand_csv_list(choice)
 
         if choice == "H":
             self.player_hand.hit(self.deck.pull_card())
@@ -70,7 +70,10 @@ class Game():
         if self.player.all_done():
             self.dealer_evaluate()
         else:
-            self.hit_loop()
+            try:
+                self.hit_loop()
+            except KeyboardInterrupt:
+                print(f"Has Ace: {self.player_hand.has_ace()}     Can Split: {self.player_hand.can_split()}")
 
     def dealer_evaluate(self):
         d_val = self.dealer_hand.get_hand_val()
@@ -104,14 +107,12 @@ class Game():
     def reset_game(self):
         self.player.reset(self.dealer_hand)
         self.dealer_hand.reset()
-        try:
-            self.start_game()
-        except RecursionError:
-            self.dt.update_csv_file()
+        self.start_game()
+        
 
     def print_console(self, type):
         os.system("cls")
-        print(f"Hand Bet: {str(self.player_hand.get_bet())}  Total Profit: {str(self.player.get_proft())}")
+        print(f"Hand Bet: {str(self.player_hand.get_bet())}  Total Profit: {str(self.player.get_proft())}   Count: {round(self.deck.get_true_count(),3)}")
         if (type == 0): #hit_loop
             print(f"Dealer - {self.dealer_hand.get_hand_val_print()}\n{self.dealer_hand}\nYou - {self.player_hand.get_hand_val_print()} \n{self.player_hand}")
         elif(type==1): #Dealer Win (player bust)
@@ -125,3 +126,6 @@ class Game():
         elif(type==5): #Draw
             print(f"DRAW\nDealer - {self.dealer_hand.get_hand_val()}\n{self.dealer_hand}\nYou - {self.player_hand.get_hand_val()} \n{self.player_hand}")
 
+    def update_csv(self):
+        self.dt.update_csv_file()
+        self.dt.update_betting_csv()
