@@ -41,6 +41,9 @@ class Hand():
         return f"{self.hand_value}"
     
     #Logic statements for having an ace or being able to split
+    def is_soft(self):
+        return self.ace_hand_value<=21 and self.ace
+
     def has_ace(self):
         return self.ace
     

@@ -87,7 +87,7 @@ class Deck(object):
         return self.cards[0]
 
     def get_true_count(self):
-        return -float(self.count/(float(len(self.cards)/52)))
+        return -round(float(self.count/(float(len(self.cards)/52))),3)
     
     def get_count(self):
         return self.count

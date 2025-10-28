@@ -50,7 +50,7 @@ class Game():
 
     def hit_loop(self):
         self.player_hand = self.player.get_hand()
-        self.print_console(type=0)
+        #self.print_console(type=0)
 
         choice = self.player.hit_stand()
         if choice != "C":
@@ -82,7 +82,7 @@ class Game():
             self.dealer_hand.append(self.deck.pull_card())
             d_val = self.dealer_hand.get_hand_val()
 
-        self.end_game()
+        #self.end_game()
 
     def end_game(self):
         d_val = self.dealer_hand.get_hand_val()
@@ -108,7 +108,9 @@ class Game():
         self.player.reset(self.dealer_hand)
         self.dealer_hand.reset()
         self.start_game()
-        
+
+    def reset_player(self):
+        self.player.reset_profit()
 
     def print_console(self, type):
         os.system("cls")
