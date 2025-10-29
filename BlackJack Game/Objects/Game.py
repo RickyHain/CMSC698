@@ -131,3 +131,6 @@ class Game():
     def update_csv(self):
         self.dt.update_csv_file()
         self.dt.update_betting_csv()
+
+    def count_debug(self):
+        self.deck.manual_check()

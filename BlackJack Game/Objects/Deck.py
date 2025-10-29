@@ -4,7 +4,7 @@ from .Card import Card
 
 class Deck(object):
     numDecks = 1
-    cards = []
+    cards: list[Card] = []
     count = 0
     
 
@@ -37,6 +37,52 @@ class Deck(object):
                 for val in range (1,14):
                     self.cards.append(Card((val),suit))
         self.shuffle()
+
+    def manual_check(self):
+        two = 0
+        three = 0
+        four = 0
+        five = 0
+        six = 0
+        seven = 0
+        eight = 0
+        nine = 0
+        ten = 0
+        acee = 0
+
+        for card in self.cards:
+            if card.getVal() == 1:
+                acee += 1
+            elif card.getVal() ==2:
+                two += 1
+            elif card.getVal() == 3:
+                three+= 1
+            elif card.getVal() == 4:
+                four+= 1
+            elif card.getVal() == 5:
+                five+= 1
+            elif card.getVal() == 6:
+                six+= 1
+            elif card.getVal() == 7:
+                seven+= 1
+            elif card.getVal() == 8:
+                eight+= 1
+            elif card.getVal() == 9:
+                nine+= 1
+            elif card.getVal() == 10:
+                ten+= 1
+
+        print(f"2s: {two}, {self.twos}")
+        print(f"3s: {three}, {self.threes}")
+        print(f"4s: {four}, {self.fours}")
+        print(f"5s: {five}, {self.fives}")
+        print(f"6s: {six}, {self.sixes}")
+        print(f"7s: {seven}, {self.sevens}")
+        print(f"8s: {eight}, {self.eights}")
+        print(f"9s: {nine}, {self.nines}")
+        print(f"10s: {ten}, {self.tens}")
+        print(f"As: {acee}, {self.aces}")
+
 
     def __init__(self, n):
         self.numDecks = n
@@ -87,14 +133,15 @@ class Deck(object):
         return self.cards[0]
 
     def get_true_count(self):
-        return -round(float(self.count/(float(len(self.cards)/52))),3)
+
+        return round(float(self.count/(float(len(self.cards)/52))),3)
+    
+    # def get_count(self):
+    #     return self.count
     
     def get_count(self):
-        return self.count
-    
-    def get_count_calc(self):
         deck = self
-        return ((deck.twos+deck.threes+deck.fours+deck.fives+deck.sixes)-(deck.tens+deck.aces))/(float(len(self.cards)/52))
+        return ((120-(deck.twos+deck.threes+deck.fours+deck.fives+deck.sixes))-(120-(deck.tens+deck.aces)))/(float(len(self.cards)/52))
 
     def print(self):
         for card in self.cards:

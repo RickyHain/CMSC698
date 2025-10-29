@@ -75,13 +75,16 @@ class CardCounter(object):
         true_count = self.deck.get_true_count()
         TC_max = 5.0
         k = (self.max_bet-self.min_bet)/(TC_max-1)
-
+        
         if true_count <= 1:
             bet = self.min_bet
         else:
             bet = self.min_bet + (true_count-1) * k
             bet = min(bet, self.max_bet)
         bet = round(bet / 5) * 5
+
+        # if self.profit>5000:
+        #     bet = 0
 
         self.hands.append(Hand(bet))
         self.total_hands +=1
@@ -123,13 +126,14 @@ class CardCounter(object):
 
 
 def setup_tables():
+    #Tables based off of: Dealer stand on soft 17, Double after split (BASIC STRATEGY)
     split = [
             # 2    3    4    5    6    7    8    9   10    A
-            ["H" ,"H" ,"SP","SP","SP","SP","H" ,"H" ,"H" ,"H" ], #2's
-            ["H" ,"H" ,"SP","SP","SP","SP","H" ,"H" ,"H" ,"H" ], #3's
-            ["H" ,"H" ,"H" ,"H" ,"H" ,"H" ,"H" ,"H" ,"H" ,"H" ], #4's
+            ["SP","SP","SP","SP","SP","SP","H" ,"H" ,"H" ,"H" ], #2's
+            ["SP","SP","SP","SP","SP","SP","H" ,"H" ,"H" ,"H" ], #3's
+            ["H" ,"H" ,"H" ,"SP","SP","H" ,"H" ,"H" ,"H" ,"H" ], #4's
             ["D" ,"D" ,"D" ,"D" ,"D" ,"D" ,"D" ,"D" ,"H" ,"H" ], #5's
-            ["H" ,"SP","SP","SP","SP","H" ,"H" ,"H" ,"H" ,"H" ], #6's
+            ["SP","SP","SP","SP","SP","H" ,"H" ,"H" ,"H" ,"H" ], #6's
             ["SP","SP","SP","SP","SP","SP","H" ,"H" ,"H" ,"H" ], #7's
             ["SP","SP","SP","SP","SP","SP","SP","SP","SP","SP"], #8's
             ["SP","SP","SP","SP","SP","S" ,"SP","SP","S" ,"S" ], #9's
@@ -144,9 +148,9 @@ def setup_tables():
             ["H" ,"H" ,"D" ,"D" ,"D" ,"H" ,"H" ,"H" ,"H" ,"H"], #15
             ["H" ,"H" ,"D" ,"D" ,"D" ,"H" ,"H" ,"H" ,"H" ,"H"], #16
             ["H" ,"D" ,"D" ,"D" ,"D" ,"H" ,"H" ,"H" ,"H" ,"H"], #17
-            ["H" ,"DS","DS","DS","DS","H" ,"H" ,"H" ,"H" ,"H"], #18
-            ["H" ,"D" ,"D" ,"D" ,"D" ,"H" ,"H" ,"H" ,"H" ,"H"], #19
-            ["D" ,"D" ,"D" ,"D" ,"D" ,"D" ,"D" ,"D" ,"H" ,"H"]  #20
+            ["DS","DS","DS","DS","DS","S" ,"S" ,"H" ,"H" ,"H"], #18
+            ["S" ,"S" ,"S" ,"S" ,"DS","S" ,"S" ,"S" ,"S" ,"S"], #19
+            ["S" ,"S" ,"S" ,"S" ,"S" ,"S" ,"S" ,"S" ,"S" ,"S"]  #20
         ]
     
     hard = [
