@@ -74,9 +74,10 @@ class Hand():
 
         # print(f" self.gethandvalue(): {self.get_hand_val()}")
         if(len(self._data)==2):
-            if (self.hand_value == 21):
+            if (self.get_hand_val() == 21):
                 self.done = True
-                self.bet_value *= 1.5
+                new_bet = self.bet_value * 1.5
+                self.bet_value = new_bet
             
             if (self._data[0].getVal() == self._data[1].getVal()):
                 self.split = True
