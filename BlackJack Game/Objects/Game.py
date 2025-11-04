@@ -1,37 +1,41 @@
 from .Deck import Deck
 from .Card import Card
 from .Hand import Hand
+from .Players.Dealer import Dealer
 from .Players.Player import Player
 from .Players.BasicStrategy import BasicStrategy
 from .Players.TestPlayer import TestPlayer
 from .Players.CardCounter import CardCounter
+from .Players.Cheater import Cheater
 
 from .Card_Counting.DataTracker import DataTracker
-from .Card_Counting.AveragePlayer import AveragePlayer
-from .Card_Counting.Cheater import Cheater
 
 import os
 
 class Game():
     #Intitalizing variables depending on specificaation in "black_jack.py"
-    def __init__(self,number_players = 1, number_decks = 6, max_bet = 500, min_bet = 10):
-        #Used to generate csv data for each choice
-        #our diffetent player objects
-        # self.ch = Cheater(self.player_hand,self.dealer_hand,self.deck)
-        # self.ap = AveragePlayer(self.player_hand, self.dealer_hand)
-        self.dealer_hand: Hand = Hand()
-        self.player_wins: int = 0
-        self.dealer_wins: int = 0
-        self.player_hand: Hand = Hand()
-
+    def __init__(self,player_type = "p", number_decks = 6, max_bet = 500, min_bet = 10):
         #Specifications for gameplay
-        self.num_players: int = number_players
         self.num_decks: int = number_decks
         self.deck: Deck = Deck(number_decks)
+        self.deck.print_deck()
 
-        self.player: CardCounter = CardCounter(max_bet, min_bet, self.dealer_hand, self.deck)
-        # self.player: Player = Player(max_bet, min_bet)
-        #self.player: BasicStrategy = BasicStrategy(max_bet, min_bet, self.dealer_hand)
+        #Dealer Specifications
+        self.dealer:Dealer = Dealer(self.deck)
+        self.dealer_hand: Hand = self.dealer.get_hand()
+        self.dealer_wins: int = 0
+
+        #Player Specifications
+        self.player: Player = Player(max_bet, min_bet)
+        if player_type == "bs":
+            self.player: BasicStrategy = BasicStrategy(max_bet, min_bet, self.dealer_hand)
+        elif player_type == "cc":
+            self.player: CardCounter = CardCounter(max_bet, min_bet, self.dealer_hand, self.deck)
+        elif player_type == "ch":
+            self.player: Cheater = Cheater(max_bet, min_bet, self.dealer, self.deck)
+        self.player_hand: Hand = Hand()
+        self.player_wins: int = 0
+            
         self.dt = DataTracker(self.player,self.dealer_hand,self.deck)
 
     def start_game(self):
@@ -40,17 +44,19 @@ class Game():
         self.player_hand = self.player.get_hand()
 
         self.player_hand.append(self.deck.pull_card())
-        self.dealer_hand.append(self.deck.pull_card())
+        self.dealer.draw_card(self.deck.pull_card())
+        # self.dealer_hand.append(self.deck.pull_card())
         self.player_hand.append(self.deck.pull_card())
+        self.dealer.draw_card(self.deck.pull_card())
 
-        if self.player.all_done():
-            self.dealer_evaluate()
+        if self.player.all_done(): #in case of blackjack
+            self.dealer.evaluate()
         else:
             self.hit_loop()
 
     def hit_loop(self):
         self.player_hand = self.player.get_hand()
-        #self.print_console(type=0)
+        self.print_console(type=0)
 
         choice = self.player.hit_stand()
         if choice != "C":
@@ -68,7 +74,9 @@ class Game():
             self.player_hand.append(self.deck.pull_card())
 
         if self.player.all_done():
-            self.dealer_evaluate()
+            # self.dealer_evaluate()
+            self.dealer.evaluate()
+            self.end_game()
         else:
             try:
                 self.hit_loop()
@@ -82,11 +90,10 @@ class Game():
             self.dealer_hand.append(self.deck.pull_card())
             d_val = self.dealer_hand.get_hand_val()
 
-        #self.end_game()
 
     def end_game(self):
         d_val = self.dealer_hand.get_hand_val()
-        p_val = self.player_hand.get_hand_val()
+        p_val = self.player.get_hand().get_hand_val()
 
         if(p_val>21):                           #player bust
             self.dealer_wins+=1
@@ -102,11 +109,10 @@ class Game():
             self.print_console(type=4)
         elif(d_val==p_val):                     #draw
             self.print_console(type=5)
-
         
     def reset_game(self):
-        self.player.reset(self.dealer_hand)
-        self.dealer_hand.reset()
+        self.player.reset(self.dealer_hand) #player.reset also adds and subtracts hand bets for the player
+        self.dealer.reset()
         self.start_game()
 
     def reset_player(self):

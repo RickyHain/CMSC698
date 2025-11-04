@@ -129,12 +129,13 @@ class Deck(object):
 
         return card
 
-    def get_top_card(self):
-        return self.cards[0]
+    def get_index(self, i:int):
+        card: Card = self.cards[i]
+        return card
 
     def get_true_count(self):
 
-        return round(float(self.count/(float(len(self.cards)/52))),3)
+        return int(self.count/(float(len(self.cards)/52)))
     
     # def get_count(self):
     #     return self.count
@@ -149,3 +150,7 @@ class Deck(object):
 
     def get_csv(self):
         return [self.aces, self.tens, self.nines, self.eights, self.sevens, self.sixes, self.fives, self.fours, self.threes, self.twos]
+    
+    def print_deck(self):
+        for card in self.cards:
+            print(str(card) + ", ")

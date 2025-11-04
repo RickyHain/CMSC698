@@ -22,6 +22,14 @@ class Hand():
 
     def get_bet(self):
         return self.bet_value
+    
+    def get_cards(self):
+        temp: list[Card] = []
+
+        for card in self._data:
+            temp.append(card)
+
+        return temp
 
     #Will return the highest value of the hand that is under 21 (depending on if there's an ace or not)
     def get_hand_val(self): 
@@ -77,7 +85,7 @@ class Hand():
             if (self.get_hand_val() == 21):
                 self.done = True
                 new_bet = self.bet_value * 1.5
-                self.bet_value = new_bet
+                self.bet_value = int(new_bet)
             
             if (self._data[0].getVal() == self._data[1].getVal()):
                 self.split = True

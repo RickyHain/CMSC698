@@ -127,6 +127,8 @@ class CardCounter(object):
 
 def setup_tables():
     #Tables based off of: Dealer stand on soft 17, Double after split (BASIC STRATEGY)
+    
+    #2 cards in hand of same value
     split = [
             # 2    3    4    5    6    7    8    9   10    A
             ["SP","SP","SP","SP","SP","SP","H" ,"H" ,"H" ,"H" ], #2's
@@ -141,6 +143,7 @@ def setup_tables():
             ["SP","SP","SP","SP","SP","SP","SP","SP","SP","SP"]  #Aces
         ]
 
+    #Hand value when ace counts as 11
     soft = [
             # 2    3    4    5    6    7    8    9   10    A
             ["H" ,"H" ,"H" ,"D" ,"D" ,"H" ,"H" ,"H" ,"H" ,"H"], #13
@@ -153,6 +156,7 @@ def setup_tables():
             ["S" ,"S" ,"S" ,"S" ,"S" ,"S" ,"S" ,"S" ,"S" ,"S"]  #20
         ]
     
+    #Hand value when ace doesn't count as 11 or no ace
     hard = [
             # 2    3    4    5    6    7    8    9   10    A
             ["H" ,"H" ,"H" ,"H" ,"H" ,"H" ,"H" ,"H" ,"H" ,"H"], #5
