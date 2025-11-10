@@ -7,6 +7,7 @@ class Dealer(object):
         self.hand: Hand = Hand()
         self.hide_card: Card = None
         self.deck:Deck = deck
+        self.test_hand: Hand = Hand()
             
     def evaluate(self):
         # print(f"HIDE CARD: {str(self.hide_card)}")
@@ -16,13 +17,9 @@ class Dealer(object):
             self.hand.append(self.deck.pull_card())
 
     def look_forward(self, index):
-        test_hand: Hand = Hand()
-        hand_cards = self.hand.get_cards()
-
-        for card in hand_cards:
+        test_hand = Hand()
+        for card in self.test_hand.get_cards():
             test_hand.append(card)
-
-        test_hand.append(self.hide_card)
 
         i:int = index
 
@@ -41,6 +38,9 @@ class Dealer(object):
         else:
             self.hand.append(card)
 
+    def set_test_hand(self, hand:Hand):
+        self.test_hand = hand
+
     def reset(self):
         self.hide_card: Card = None
         self.hand.reset()
@@ -50,3 +50,12 @@ class Dealer(object):
     
     def get_hand_val(self):
         return self.hand.get_hand_val()
+    
+    def get_full_hand_val(self):
+        t: Hand = Hand()
+        for card in self.hand.get_cards():
+            t.append(card)
+
+        t.append(self.hide_card)
+
+        return t.get_hand_val()

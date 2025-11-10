@@ -7,19 +7,20 @@ losses = 0
 
 game.start_game()
 
-for j in range(1000):
-    for i in range (3000):
-        game.reset_game()
+for j in range(1):
+    for i in range (1):
+        game.reset_game() 
     profit = game.player.get_proft()
+
     if profit >0:
         wins+=1
     else:
         losses +=1
     
 
-    #print (f"profit: {profit}")
-    game.reset_player()
+    # game.reset_player()
+    print (f"profit: {profit}")
 
 print(f"Wins: {wins}   Losses: {losses}")
 # game.count_debug()
-#game.update_csv()
+game.update_csv()

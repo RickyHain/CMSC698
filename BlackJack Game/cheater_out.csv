@@ -1,0 +1,4 @@
+Move,Player,Dealer,can_split,has_ace,c1,c2,c3,c4
+S,4,8,True,False,7S,7H,6H,5H
+W,4,24,True,False,6H,5H,QD,QD
+D,16,15,False,False,4D,2D,3D,7C
