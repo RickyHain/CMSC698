@@ -118,11 +118,7 @@ class Cheater(object):
                     self.expand_csv_list("L")
                     self.profit -= hand.get_bet()
                 else:
-                    self.expand_csv_list("T")
-
-        print("poo")
-
-        
+                    self.expand_csv_list("T")    
 
         self.hand_index = 0
         self.total_hands = 0

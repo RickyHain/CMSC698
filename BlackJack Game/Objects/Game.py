@@ -56,7 +56,7 @@ class Game():
 
     def hit_loop(self):
         self.player_hand = self.player.get_hand()
-        self.print_console(type=0)
+        # self.print_console(type=0)
 
         choice = self.player.hit_stand()
         if choice != "C":
@@ -74,9 +74,8 @@ class Game():
             self.player_hand.append(self.deck.pull_card())
 
         if self.player.all_done():
-            # self.dealer_evaluate()
             self.dealer.evaluate()
-            self.end_game()
+            # self.end_game()
         else:
             try:
                 self.hit_loop()
@@ -137,7 +136,7 @@ class Game():
     def update_csv(self):
         self.dt.update_csv_file()
         self.dt.update_betting_csv()
-        self.player.update_csv_file()
+        # self.player.update_csv_file()
 
     def count_debug(self):
         self.deck.manual_check()

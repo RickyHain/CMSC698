@@ -58,6 +58,9 @@ class Hand():
     def can_split(self):
         return self.split
     
+    def can_double(self):
+        return len(self._data) == 2
+
     def hand_over(self):
         return self.done
     

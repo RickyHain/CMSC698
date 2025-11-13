@@ -7,8 +7,8 @@ losses = 0
 
 game.start_game()
 
-for j in range(1):
-    for i in range (1):
+for j in range(20):
+    for i in range (100000):
         game.reset_game() 
     profit = game.player.get_proft()
 
@@ -18,7 +18,7 @@ for j in range(1):
         losses +=1
     
 
-    # game.reset_player()
+    game.reset_player()
     print (f"profit: {profit}")
 
 print(f"Wins: {wins}   Losses: {losses}")
