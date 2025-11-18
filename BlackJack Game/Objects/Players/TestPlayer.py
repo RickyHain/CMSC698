@@ -13,7 +13,7 @@ class TestPlayer(object):
         self.profit:int = 0
         self.dealer_hand: Hand = dealer_hand
 
-    def get_proft(self):
+    def get_profit(self):
         return self.profit
     
     def all_done(self):

@@ -11,7 +11,7 @@ class Player(object):
         self.min_bet = min_bet
         self.profit:int = 0
 
-    def get_proft(self):
+    def get_profit(self):
         return self.profit
     
     def all_done(self):

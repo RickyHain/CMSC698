@@ -18,7 +18,7 @@ class BasicStrategy(object):
         self.hard_table: list[list[str]] 
         self.split_table, self.soft_table, self.hard_table = setup_tables()
 
-    def get_proft(self):
+    def get_profit(self):
         return self.profit
     
     def all_done(self):

@@ -24,7 +24,7 @@ class Cheater(object):
         self.move_chains = []
         self.csv.append(self.headers)
 
-    def get_proft(self):
+    def get_profit(self):
         return self.profit
     
     def all_done(self):

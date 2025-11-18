@@ -1,6 +1,6 @@
 from Objects.Game import Game
 
-game = Game("ch",6, 500, 10)
+game = Game("ai",6, 500, 10)
 
 wins = 0
 losses = 0
@@ -8,9 +8,9 @@ losses = 0
 game.start_game()
 
 for j in range(20):
-    for i in range (100000):
+    for i in range (10):
         game.reset_game() 
-    profit = game.player.get_proft()
+    profit = game.player.get_profit()
 
     if profit >0:
         wins+=1

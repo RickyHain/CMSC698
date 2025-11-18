@@ -7,6 +7,7 @@ from .Players.BasicStrategy import BasicStrategy
 from .Players.TestPlayer import TestPlayer
 from .Players.CardCounter import CardCounter
 from .Players.Cheater import Cheater
+from .Players.SupervisedAI import SupervisedAI
 
 from .Card_Counting.DataTracker import DataTracker
 
@@ -33,6 +34,8 @@ class Game():
             self.player: CardCounter = CardCounter(max_bet, min_bet, self.dealer_hand, self.deck)
         elif player_type == "ch":
             self.player: Cheater = Cheater(max_bet, min_bet, self.dealer, self.deck)
+        elif player_type == "ai":
+            self.player: SupervisedAI = SupervisedAI(max_bet, min_bet, self.dealer_hand, self.deck)
         self.player_hand: Hand = Hand()
         self.player_wins: int = 0
             
